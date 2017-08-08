@@ -1,10 +1,13 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
 import beautifulscraper as bs
 import zipfile
 import os
 
 rvgl_dir = "/home/nico/rvgl/"
+
+os.chdir(rvgl_dir)
 
 scrapper = bs.BeautifulScraper()
 webpage = scrapper.go("https://www.revoltrace.net/month_tracks.php")
@@ -37,3 +40,5 @@ for filename in os.listdir("temp"):
     os.remove(file_uri)
 
 os.rmdir("temp")
+
+os.execv("./fix_cases", ("./fix_cases",))
