@@ -1,11 +1,19 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import argparse
+
 import beautifulscraper as bs
 import zipfile
 import os
 
-rvgl_dir = "/home/nico/rvgl/"
+parser = argparse.ArgumentParser(description='Download latest month tracks')
+
+parser.add_argument('rvgl_path', type=str, help='Path where Re-Volt/RVGL is located.')
+
+args = parser.parse_args()
+
+rvgl_dir = args.rvgl_path
 
 os.chdir(rvgl_dir)
 
@@ -41,4 +49,7 @@ for filename in os.listdir("temp"):
 
 os.rmdir("temp")
 
-os.execv("./fix_cases", ("./fix_cases",))
+if os.name == "posix":
+    os.execv("./fix_cases", ("./fix_cases",))
+
+exit(0)
