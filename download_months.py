@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import tkinter.filedialog
 
 import beautifulscraper as bs
 import zipfile
@@ -9,11 +10,11 @@ import os
 
 parser = argparse.ArgumentParser(description='Download latest month tracks')
 
-parser.add_argument('rvgl_path', type=str, help='Path where Re-Volt/RVGL is located.')
+parser.add_argument('--path', type=str, help='Path where Re-Volt/RVGL is located.')
 
 args = parser.parse_args()
 
-rvgl_dir = args.rvgl_path
+rvgl_dir = args.path if args.path else tkinter.filedialog.askdirectory()
 
 os.chdir(rvgl_dir)
 
