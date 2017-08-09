@@ -37,14 +37,14 @@ for a in webpage.find_all(attrs={"class": "downloadTrack"}):
     
     print("Downloading from "+true_url)
     true_url = true_url[:8]+bs.quote(true_url[8:])
-    bs.urllib2.urlretrieve(true_url, "temp/"+track_name+".zip")
+    bs.urllib2.urlretrieve(true_url, "./temp/"+track_name+".zip")
 
 for filename in os.listdir("temp"):
     print("Extracting "+filename)
     
-    file_uri = 'temp/'+filename
+    file_uri = './temp/'+filename
     with zipfile.ZipFile(file_uri, "r") as z:
-        z.extractall(rvgl_dir)
+        z.extractall()
     os.remove(file_uri)
 
 os.rmdir("temp")
