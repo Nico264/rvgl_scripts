@@ -17,13 +17,10 @@ def fix_cases():
                 except NotADirectoryError:
                     os.remove(file.lower())
                 os.rename(file, file.lower())
-    
-    return 0
-
 
 def install_month():
     if not messagebox.askokcancel("Are you sure?", "This will modify your Re-Volt install, are you sure?"):
-        return 0
+        exit(0)
     
     scrapper = bs.BeautifulScraper()
     webpage = scrapper.go("https://www.revoltrace.net/month_tracks.php")
@@ -52,11 +49,12 @@ def install_month():
     
     messagebox.showinfo("Finished", "Everything is DONE!")
     
-    return 0
-
-
-def install_asset(URL, batch=False):
-    asset_name = URL[8:].split("/")[-1].split(".")[0]
+    exit(0)
+    
+def install_asset(URL_encoded, batch=False):
+    URL = bs.urllib2.unquote(URL_encoded)
+    filename = URL[8:].split("/")[-1]
+    asset_name = filename.split(".")[0]
     
     if not batch: os.mkdir("temp")
     
@@ -82,20 +80,11 @@ def install_asset(URL, batch=False):
         os.rmdir("temp")
         fix_cases()
 
-    return 0
-
-
 def launch(*args):
     os.execv("./rvgl", ("rvgl", *args))
 
-    return 0
-
-
 def join(IP="", *args):
     launch("-lobby", str(IP), *args)
-    
-    return 0
-
 
 config = configparser.ConfigParser()
 
@@ -143,4 +132,4 @@ if len(sys.argv)>=2:
                  "install_asset": install_asset,
                  "install_month": install_month}
 
-    return functions[function_name](*args)
+    result = functions[function_name](*args)
