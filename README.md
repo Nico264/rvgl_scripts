@@ -6,16 +6,11 @@ All the scripts done here will work on Linux, and try to fix case-related proble
 
 # State of the scripts
 ## Done
-  Nothing yet
-
-## WIP
- - Month downloader
-
-## TBD
- - Car updater
- - Track updater
+ - Download and install assets at a given URL (zip or 7z compressed)
+ - Download month tracks
+ - Fast launch and connect via link
 
 ### Send me any idea via GitHub issues
 
 # Requirements
-To use scripts accessing webpages (car/track/month updaters):`sudo -H pip3 install beautifulscraper`
+To use scripts accessing the internet (installers):`sudo -H pip3 install beautifulscraper`
