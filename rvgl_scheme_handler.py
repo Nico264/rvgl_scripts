@@ -56,6 +56,8 @@ def install_month():
     exit(0)
     
 def install_asset(URL_encoded, batch=False):
+    if not batch: warning()
+    
     URL = bs.urllib2.unquote(URL_encoded)
     filename = URL[8:].split("/")[-1]
     asset_name = filename.split(".")[0]
