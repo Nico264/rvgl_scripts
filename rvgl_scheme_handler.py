@@ -6,6 +6,11 @@ from tkinter import filedialog, messagebox
 import beautifulscraper as bs
 import zipfile, lzma
 
+def warning():
+    if not messagebox.askokcancel("RVGL web action", "This will modify your Re-Volt install, are you sure?"):
+        exit(0)
+
+
 def fix_cases():
     if os.name == "posix":
         for file in glob.iglob(r"**", recursive=True):
@@ -19,8 +24,7 @@ def fix_cases():
                 os.rename(file, file.lower())
 
 def install_month():
-    if not messagebox.askokcancel("Are you sure?", "This will modify your Re-Volt install, are you sure?"):
-        exit(0)
+    warning()
     
     scrapper = bs.BeautifulScraper()
     webpage = scrapper.go("https://www.revoltrace.net/month_tracks.php")
