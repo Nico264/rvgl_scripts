@@ -44,7 +44,6 @@ def install_month():
         if url.netloc == "revoltxtg.co.uk":
             true_url = url.geturl()
         
-        installprint("Downloading from "+true_url)
         true_url = true_url[:8]+bs.quote(true_url[8:])
         install_asset(true_url, batch=True)
     
