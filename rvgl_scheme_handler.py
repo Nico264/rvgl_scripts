@@ -1,10 +1,17 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import os, sys, sys, glob, shutil, configparser, subprocess
+import os, sys, sys, glob, shutil, configparser, subprocess, ctypes
 from tkinter import filedialog, messagebox
 import beautifulscraper as bs
 import zipfile, lzma
+
+def is_admin():
+	try:
+		return ctypes.windll.shell32.IsUserAnAdmin()
+	except:
+		return False
+
 
 def warning(install_name):
     if not messagebox.askokcancel("RVGL web action", "This will modify your Re-Volt install, are you sure?\nYou are about to install "+install_name+"."):
@@ -91,7 +98,10 @@ def install_asset(URL_encoded, batch=False):
 
 
 def launch(*args):
-    os.execv("./rvgl", ("rvgl", *args))
+	if os.name == "posix":
+		os.execv("./rvgl", ("rvgl", *args))
+	else:
+		os.execv("rvgl.exe", ("rvgl.exe", *args))
 
 
 def join(IP="", *args):
@@ -101,10 +111,7 @@ def join(IP="", *args):
 def main():
     config = configparser.ConfigParser()
 
-    if not config.read("scheme_handler_settings.ini"):
-        messagebox.showinfo("No configuration found", "I did not found the configuration file, please move to your RVGL install folder then confirm")
-        config["RVGL"] = {"install_dir": filedialog.askdirectory()}
-        
+    if not config.read("scheme_handler_settings.ini"):        
         if os.name == "posix": #assuming Linux here, I don't know anything about macs...
             with open(os.environ["HOME"]+"/.local/share/applications/rvgl_scheme_handler.desktop", "w") as desktop_file:
                 desktop_file.write("[Desktop Entry]\n\
@@ -119,13 +126,20 @@ def main():
                                     Name=RVGL scheme handler\n\
                                     Comment=Launch RVGL")
             subprocess.run(("update-desktop-database", os.environ["HOME"]+"/.local/share/applications"))
-        else: # for Windows, to be confirmed
+        elif is_admin(): # for Windows, to be confirmed
             import winreg
+            winreg.SetValue(winreg.HKEY_CLASSES_ROOT, "rvgl", winreg.REG_SZ, "RVGL:// custom handler")
             key = winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, "rvgl")
             winreg.SetValue(key, "URL Protocol", winreg.REG_SZ, "")
             shell = winreg.CreateKey(key, "shell")
             open_key = winreg.CreateKey(shell, "open")
-            winreg.SetValue(open_key, "command", winreg.REG_SZ, os.path.abspath(".")+"\\rvgl_scheme_handler.py")
+            winreg.SetValue(open_key, "command", winreg.REG_SZ, '"'+os.path.abspath(".")+'\\rvgl_scheme_handler.exe" "%1"')
+        else:
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, "", None, 1)
+            exit(0)
+		
+        messagebox.showinfo("No configuration found", "I did not found the configuration file, please move to your RVGL install folder then confirm")
+        config["RVGL"] = {"install_dir": filedialog.askdirectory()}
         
         with open('scheme_handler_settings.ini', 'w') as configfile:
             config.write(configfile)
