@@ -6,8 +6,8 @@ from tkinter import filedialog, messagebox
 import beautifulscraper as bs
 import zipfile, lzma
 
-def warning():
-    if not messagebox.askokcancel("RVGL web action", "This will modify your Re-Volt install, are you sure?"):
+def warning(install_name):
+    if not messagebox.askokcancel("RVGL web action", "This will modify your Re-Volt install, are you sure?\nYou are about to install "+install_name+"."):
         exit(0)
 
     try:
@@ -36,12 +36,10 @@ def fix_cases():
                 os.rename(file, file.lower())
 
 def install_month():
-    warning()
+    warning("Month tracks")
     
     scrapper = bs.BeautifulScraper()
     webpage = scrapper.go("https://www.revoltrace.net/month_tracks.php")
-    
-    messagebox.showinfo("Tracks found", "I found the tracks, will now download and install them. I'll be back to you when I'm finished")
 
     for a in webpage.find_all(attrs={"class": "downloadTrack"}):
         url = bs.urlparse(a.get("href"))
@@ -60,9 +58,6 @@ def install_month():
 
     
 def install_asset(URL_encoded, batch=False):
-    if not batch:
-        warning()
-    
     URL = bs.urllib2.unquote(URL_encoded)
     URL = bs.urllib2.unquote(URL)
     
@@ -70,6 +65,9 @@ def install_asset(URL_encoded, batch=False):
     
     filename = URL[8:].split("/")[-1]
     asset_name = filename.split(".")[0]
+    
+    if not batch:
+        warning(asset_name)
     
     print("Downloading "+asset_name+" from "+URL)
     bs.urllib2.urlretrieve(URL, "temp/"+asset_name+".zip")
