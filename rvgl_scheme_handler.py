@@ -132,17 +132,19 @@ def main():
         rvgl_dir = config["RVGL"]["install_dir"]
     else: # Windows
         import winreg
+        Software = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software")
+        Classes = winreg.OpenKeyEx(Software, "Classes")
         
         try:
-            key = winreg.OpenKeyEx(winreg.HKEY_CLASSES_ROOT, "rvgl")
+            key = winreg.OpenKeyEx(Classes, "rvgl")
             rvgl_dir = winreg.QueryValue(key, "directory")
         except OSError:
             if is_admin():
                 messagebox.showinfo("No configuration found", "I did not found the configuration file, please move to your RVGL install folder then confirm")
                 rvgl_dir = filedialog.askdirectory()
                 
-                winreg.SetValue(winreg.HKEY_CLASSES_ROOT, "rvgl", winreg.REG_SZ, "RVGL:// custom handler")
-                key = winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, "rvgl")
+                winreg.SetValue(winreg.HKEY_CLASSES_ROOT, "rvgl", winreg.REG_SZ, "RVGL custom handler")
+                key = winreg.CreateKey(Classes, "rvgl")
                 winreg.SetValue(key, "URL Protocol", winreg.REG_SZ, "")
                 winreg.SetValue(key, "directory", winreg.REG_SZ, rvgl_dir)
                 shell = winreg.CreateKey(key, "shell")
