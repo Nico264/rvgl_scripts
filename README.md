@@ -1,3 +1,5 @@
+# Deprecated in favor of [RVGL Companion](https://github.com/Nico264/RVGL-Companion)
+
 # rvgl_scripts
 Random helper scripts for use with RVGL
 
